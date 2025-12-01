@@ -4,8 +4,7 @@
 
 ## Building
 
-Requires: Rust 1.91 or later
-Just run `cargo build` (it's not that deep).
+*(Tested on Rust v1.91.0)* Just run `cargo build`, it's not that deep.
 
 As usual the output executable will be located under `target/release/aoc`.
 
@@ -13,7 +12,9 @@ As usual the output executable will be located under `target/release/aoc`.
 
 Run as `aoc <day> [part]`; by default it will run all parts of specified day.
 
-Unless specified with `-l` solutions are chosen from the 2025 pool of solutions. See help message provided by `aoc -h` for more information
+Unless specified with `-l` solutions are chosen from the 2025 pool of solutions.
+
+See help message provided by `aoc -h` for more information.
 
 ## License
 
