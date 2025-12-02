@@ -1,5 +1,6 @@
 use gumdrop::Options;
 mod day1_2025;
+mod day2_2025;
 #[derive(Options)]
 #[options(
     help = "AoC 2024/2025 binary, written by YesWeDont and licensed under GPLv3. Input will be parsed from stdin."
@@ -50,6 +51,15 @@ fn main() {
                 println!(
                     "There are only 2 parts to the 1st day of AoC 2025! Choose a number for [part] from 1 to 2 inclusive or omit it entirely to run all parts."
                 )
+            }
+        } else if day == 2 {
+            if part == Some(1) {
+                day2_2025::part1();
+            } else if part == Some(2) {
+                day2_2025::part2();
+            } else if part == None {
+                day2_2025::part1();
+                day2_2025::part2();
             }
         } else {
             todo!()
