@@ -1,16 +1,16 @@
 pub(crate) fn run(part2: bool) {
     println!("Please enter the input data into stdin: ");
     let stdin = std::io::stdin();
-    let mut string = String::new();
     let mut state = 50;
     let mut answer = 0;
     let lineno = 0;
-    while let Ok(size) = stdin.read_line(&mut string) {
-        if size < 2 {
+    for string in stdin.lines() {
+        let string = string.expect("Error reading from stdin");
+        if string.len() < 2 {
             println!("Result: {}", answer);
             return;
         } else {
-            let mut number = string[1..string.len() - 1]
+            let mut number = string[1..string.len()]
                 .parse::<i32>()
                 .map_err(|_| format!("Bad integer on line {lineno} ({string})!"))
                 .unwrap();
@@ -43,7 +43,6 @@ pub(crate) fn run(part2: bool) {
                     answer += 1
                 }
             }
-            string.clear();
         }
     }
 }
@@ -55,4 +54,3 @@ pub(crate) fn part2() {
     println!("======Part 2======");
     run(true);
 }
-
