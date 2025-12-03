@@ -13,7 +13,7 @@ dependencies = [
 
 [[package]]
 name = "aoc"
-version = "0.0.0-2025day2"
+version = "0.0.0-2025day3"
 dependencies = [
  "divisors",
  "gumdrop",

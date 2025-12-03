@@ -1,6 +1,7 @@
 use gumdrop::Options;
 mod day1_2025;
 mod day2_2025;
+mod day3_2025;
 #[derive(Options)]
 #[options(
     help = "AoC 2024/2025 binary, written by YesWeDont and licensed under GPLv3. Input will be parsed from stdin."
@@ -60,6 +61,15 @@ fn main() {
             } else if part == None {
                 day2_2025::part1();
                 day2_2025::part2();
+            }
+        } else if day == 3 {
+            if part == Some(1) {
+                day3_2025::part1();
+            } else if part == Some(2) {
+                day3_2025::part2();
+            } else if part == None {
+                day3_2025::part1();
+                day3_2025::part2();
             }
         } else {
             todo!()
