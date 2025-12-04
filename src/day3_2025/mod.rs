@@ -1,16 +1,16 @@
-use std::str::Chars;
+mod segtree;
 
 pub(crate) fn part1() {
     println!("======Part 1======");
-    run(false)
+    run::<false>()
 }
 pub(crate) fn part2() {
     println!("======Part 2======");
-    run(true)
+    run::<true>()
 }
 type Int = u128;
-fn run(part2: bool) {
-    let allowed_len = if part2 { 12 } else { 2 };
+fn run<const PART2: bool>() {
+    // let allowed_len = if part2 { 12 } else { 2 };
     println!("Enter input:");
     println!(
         "Result: {}",
@@ -18,50 +18,56 @@ fn run(part2: bool) {
             .lines()
             .map(|line| { line.expect("stdin error - failed to read line") })
             .take_while(|line| line.len() != 0)
-            .map(|line| extract_max_joltage(line.chars(), line.len() as Int, allowed_len))
+            .map(|line| if PART2 {
+                extract_max_joltage::<12>(line)
+            } else {
+                extract_max_joltage::<2>(line)
+            })
             .sum::<Int>()
     )
 }
-fn extract_max_joltage<'a>(chars: Chars<'a>, iter_len: Int, allowed_len: Int) -> Int {
-    let cloned = chars.clone();
-    let ret = if iter_len <= allowed_len {
+// act as a tiebreaker between equal digits: rank first by the digits, then their indicies
+#[derive(PartialEq, PartialOrd, Eq, Ord, Copy, Clone, Debug)]
+struct TieBreaker(char, usize);
+
+fn extract_max_joltage<const FLIPS: usize>(chars: String) -> Int {
+    if FLIPS == 0 {
+        0
+    } else if chars.len() < FLIPS {
         chars
-            .as_str()
-            .parse::<Int>()
-            .map_err(|_| format!("Received invalid line containing {}", chars.as_str()))
+            .parse()
+            .map_err(|_| format!("Bad line `{chars}` received"))
             .unwrap()
     } else {
-        let mut saved_chars = chars.clone();
-        let TieBreaker(max_digit, max_idx) = chars
-            .take((iter_len - allowed_len + 1) as usize)
+        let (len, _) = chars
+            .chars()
             .enumerate()
-            .map(|(idx, digit)| TieBreaker(digit, usize::MAX - idx)) // big idx = last
-            .max()
-            .unwrap();
-        let max_idx = usize::MAX - max_idx;
-        saved_chars.nth(max_idx);
-        let dig = max_digit
-            .to_digit(10)
-            .ok_or_else(|| format!("Received bad digit {max_digit}"))
-            .unwrap() as Int;
-        if allowed_len == 1 {
-            dig
-        } else {
-            dig * ((10 as Int).pow(allowed_len as u32 - 1))
-                + extract_max_joltage(
-                    saved_chars,
-                    iter_len - (max_idx as Int) - 1,
-                    allowed_len - 1,
-                )
-        }
-    };
-    println!(
-        "Extract max joltage {} iter_len={iter_len} allowed_len={allowed_len} ret={ret}",
-        cloned.as_str()
-    );
-    return ret;
+            .last()
+            .expect("Received line with bad Unicode");
+        let len = len + 1;
+        let mut segtree = segtree::Segtree::new(
+            len,
+            |a: &TieBreaker, b: &TieBreaker| std::cmp::max(a, b).clone(),
+            || TieBreaker('\0', 0),
+        );
+        let mut iter = chars.chars().enumerate();
+        segtree.data().fill_with(|| {
+            let (a, b) = iter.next().unwrap();
+            TieBreaker(b, usize::MAX - a)
+        });
+        segtree.build();
+        let mut prev_idx = 0;
+        (0..FLIPS)
+            .rev()
+            .map(|remaining| {
+                let TieBreaker(digit, pos) = segtree.query(prev_idx..(len - remaining));
+                prev_idx = (usize::MAX - pos) + 1;
+                digit
+                    .to_digit(10)
+                    .ok_or_else(|| format!("Received bad digit {digit}"))
+                    .unwrap() as Int
+                    * (10 as Int).pow(remaining as u32)
+            })
+            .sum()
+    }
 }
-
-// act as a tiebreaker between equal digits: rank first by the digits, then their indicies
-#[derive(PartialEq, PartialOrd, Eq, Ord)]
-struct TieBreaker(char, usize);
