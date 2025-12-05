@@ -3,6 +3,7 @@ mod day1_2025;
 mod day2_2025;
 mod day3_2025;
 mod day4_2025;
+mod day5_2025;
 #[derive(Options)]
 #[options(
     help = "AoC 2024/2025 binary, written by YesWeDont and licensed under GPLv3. Input will be parsed from stdin."
@@ -21,6 +22,26 @@ struct OverallOptions {
 
     #[options(help_flag, short = "h", help = "Show this help message")]
     help: bool,
+}
+macro_rules! day_if {
+    ($day_num: literal, $day_name: ident, $day_parsed: ident, $part_parsed: ident) => {
+        if $day_parsed == $day_num {
+            use $day_name::*;
+            if $part_parsed == Some(1){
+                part1();
+            } else if $part_parsed == Some(2){
+                part2();
+            } else if $part_parsed == None {
+                part1();
+                part2();
+            } else {
+                println!(
+                    "There are only 2 parts to the 1st day of AoC 2025! Choose a number for [part] from 1 to 2 inclusive or omit it entirely to run all parts."
+                );
+            }
+
+        }
+    };
 }
 fn main() {
     let OverallOptions {
@@ -41,48 +62,11 @@ fn main() {
             println!(
                 "There are only 12 days in the 2025 AoC season! Choose a number for <day> from 1 to 12 inclusive."
             );
-        } else if day == 1 {
-            if part == Some(1) {
-                day1_2025::part1();
-            } else if part == Some(2) {
-                day1_2025::part2();
-            } else if part == None {
-                day1_2025::part1();
-                day1_2025::part2();
-            } else {
-                println!(
-                    "There are only 2 parts to the 1st day of AoC 2025! Choose a number for [part] from 1 to 2 inclusive or omit it entirely to run all parts."
-                )
-            }
-        } else if day == 2 {
-            if part == Some(1) {
-                day2_2025::part1();
-            } else if part == Some(2) {
-                day2_2025::part2();
-            } else if part == None {
-                day2_2025::part1();
-                day2_2025::part2();
-            }
-        } else if day == 3 {
-            if part == Some(1) {
-                day3_2025::part1();
-            } else if part == Some(2) {
-                day3_2025::part2();
-            } else if part == None {
-                day3_2025::part1();
-                day3_2025::part2();
-            }
-        } else if day == 4 {
-            if part == Some(1) {
-                day4_2025::part1();
-            } else if part == Some(2) {
-                day4_2025::part2();
-            } else if part == None {
-                day4_2025::part1();
-                day4_2025::part2();
-            }
-        } else {
-            todo!()
         }
+        day_if!(1, day1_2025, day, part);
+        day_if!(2, day2_2025, day, part);
+        day_if!(3, day3_2025, day, part);
+        day_if!(4, day4_2025, day, part);
+        day_if!(5, day5_2025, day, part);
     }
 }
