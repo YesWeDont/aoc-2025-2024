@@ -4,6 +4,7 @@ mod day2_2025;
 mod day3_2025;
 mod day4_2025;
 mod day5_2025;
+mod day6_2025;
 #[derive(Options)]
 #[options(
     help = "AoC 2024/2025 binary, written by YesWeDont and licensed under GPLv3. Input will be parsed from stdin."
@@ -68,5 +69,6 @@ fn main() {
         day_if!(3, day3_2025, day, part);
         day_if!(4, day4_2025, day, part);
         day_if!(5, day5_2025, day, part);
+        day_if!(6, day6_2025, day, part);
     }
 }
